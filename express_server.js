@@ -39,3 +39,29 @@ app.get('/urls/:id', (req, res) => {
   };
   res.render('urls_show', templateVars);
 })
+
+app.get('/u/:shortURL', (req, res) => {
+  let shortURL = req.params.shortURL;
+  let longURL = urlDatabase[shortURL];
+  if (longURL) {
+    res.redirect(longURL);
+  }else {
+    res.send('Cannot find');
+  }
+})
+
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
+});
+
+
+// temporary function 
+function generateRandomString() {
+  const str = '0123456789qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM';
+  let shortURL = '';
+  for (let i = 0; i < 6; i++){
+    shortURL += str[Math.floor(Math.random() * str.length)]
+  }
+
+  return shortURL;
+}
