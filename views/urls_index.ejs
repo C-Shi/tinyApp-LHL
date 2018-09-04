@@ -8,7 +8,8 @@
     <% include ./partials/_header.ejs %>
     <% for (url in urls){ %>
       <div>
-        <%= url%>: <a href="#"><%= urls[url]%></a> &nbsp;
+        <%= url%>: <a href="#"><%= urls[url]%></a> &nbsp; 
+        <a href="/urls/<%= url%>">Edit</a>
         <form method="POST" action="/urls/<%= url %>/delete" style="display:inline">
           <button>Delete</button>
         </form>

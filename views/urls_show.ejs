@@ -8,7 +8,13 @@
     <% include ./partials/_header.ejs %>
     <!-- check if shortURL is in the database, if not then tell user it is not found -->
     <% if (longURL.hasOwnProperty(shortURL)) { %>
-      <p><%= shortURL%>: <a href="#"><%= longURL[shortURL]%></a></p>
+      <div>
+        <h3>ShortURL: <a href="<%= longURL[shortURL]%>"><%= shortURL%></a></h3>
+        <form action="/urls/<%= shortURL%>" method="POST">
+          <input name="longURL" placeholder="<%= longURL[shortURL] %>" style="width: 300px;">
+          <button>Update</button>
+        </form>
+      </div>
     <% } else { %>
       <p>Cannot find this shortURL</p>
     <% } %>
