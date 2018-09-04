@@ -12,6 +12,8 @@ var urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+// get request
+
 app.get("/", (req, res) => {
   res.send('HOME');
 });
@@ -23,13 +25,6 @@ app.get("/urls", (req, res) => {
 
 app.get('/urls/new', (req, res) => {
   res.render('urls_new.ejs');
-})
-
-app.post('/urls', (req, res) => {
-  let shortURL = generateRandomString();
-  urlDatabase[shortURL] = `http://${req.body.longURL}`;
-  console.log(urlDatabase);
-  res.redirect(`/urls/${shortURL}`)
 })
 
 app.get('/urls/:id', (req, res) => {
@@ -50,6 +45,26 @@ app.get('/u/:shortURL', (req, res) => {
   }
 })
 
+//  *********** post request *************
+
+// add new url
+app.post('/urls', (req, res) => {
+  let shortURL = generateRandomString();
+  urlDatabase[shortURL] = `http://${req.body.longURL}`;
+  console.log(urlDatabase);
+  res.redirect(`/urls/${shortURL}`)
+})
+
+// delete existing url
+app.post('/urls/:id/delete', (req, res) => {
+  let shortURL = req.params.id;
+  delete urlDatabase[shortURL];
+  res.redirect('/urls');
+})
+
+
+
+// listen route
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
