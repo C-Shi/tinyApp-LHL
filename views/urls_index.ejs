@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>TinyApp</title>
+  </head>
+  <body>
+    <% include ./partials/_header.ejs %>
+    <% for (url in urls){ %>
+      <p><%= url%>: <a href="#"><%= urls[url]%></a></p>
+    <% } %>
+  </body>
+</html>

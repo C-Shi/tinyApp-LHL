@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>TinyApp</title>
+  </head>
+  <body>
+    <% include ./partials/_header.ejs %>
+    <!-- check if shortURL is in the database, if not then tell user it is not found -->
+    <% if (longURL.hasOwnProperty(shortURL)) { %>
+      <p><%= shortURL%>: <a href="#"><%= longURL[shortURL]%></a></p>
+    <% } else { %>
+      <p>Cannot find this shortURL</p>
+    <% } %>
+  </body>
+</html>
