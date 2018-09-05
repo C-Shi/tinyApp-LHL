@@ -21,18 +21,25 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = { 
+    urls: urlDatabase,
+    username: req.cookies.username
+  };
   res.render("urls_index", templateVars);
 });
 
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new.ejs');
+  let templateVars = {
+    username: req.cookies.username
+  }
+  res.render('urls_new.ejs', templateVars);
 })
 
 app.get('/urls/:id', (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
-    longURL: urlDatabase
+    longURL: urlDatabase,
+    username: req.cookies.username
   };
   res.render('urls_show', templateVars);
 })
@@ -73,12 +80,12 @@ app.post('/urls/:id/delete', (req, res) => {
 
 // login route
 app.post('/login', (req, res) => {
+  // username will be sent through html form
   let cookie = req.body.username;
+  // express will send back the username as cookie via res.cookie()
   res.cookie('username', cookie);
   res.redirect('/urls');
 })
-
-
 
 // listen route
 app.listen(PORT, () => {
