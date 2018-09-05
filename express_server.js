@@ -33,14 +33,14 @@ app.get("/", (req, res) => {
 app.get("/urls", (req, res) => {
   let templateVars = { 
     urls: urlDatabase,
-    username: req.cookies.username
+    username: cookieValidator(req.cookies.user_id, users)
   };
   res.render("urls_index", templateVars);
 });
 
 app.get('/urls/new', (req, res) => {
   let templateVars = {
-    username: req.cookies.username
+    username: cookieValidator(req.cookies.user_id, users)
   }
   res.render('urls_new.ejs', templateVars);
 })
@@ -49,7 +49,7 @@ app.get('/urls/:id', (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
     longURL: urlDatabase,
-    username: req.cookies.username
+    username: cookieValidator(req.cookies.user_id, users)
   };
   res.render('urls_show', templateVars);
 })
@@ -154,3 +154,10 @@ function registrationValidator(newUser){
   }
   return true;
 }
+
+function cookieValidator (cookie, users) {
+  if (cookie in users) {
+    return users[cookie];
+  }
+  return undefined;
+} 
