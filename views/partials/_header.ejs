@@ -2,6 +2,9 @@
   <h1>Welcome to this tinyApp</h1>
   <% if (username){ %>
     <h5>Welcome! <%= username %></h5>
+    <form action="/logout" method="POST">
+      <button>logout</button>
+    </form>
   <% }else{ %>
     <form action="/login" method="POST">
       <input name="username" type="text">
