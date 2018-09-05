@@ -15,6 +15,10 @@ var urlDatabase = {
     longURL: "http://www.lighthouselabs.ca",
     userID: "j1Dn4r"
   },
+  '7xgF3d': {
+    longURL: "http://www.google.com",
+    userID: "lds35r"
+  }
 };
 
 // global object for user info
@@ -24,6 +28,11 @@ const users = {
     email: 'hello@hello.com',
     password: 'hello'
   },
+  'lds35r': {
+    id: 'j1Dn4r',
+    email: 'home@home.com',
+    password: 'home'
+  }
 }
 
 //  **************** get request *******************
@@ -92,8 +101,13 @@ app.post('/urls', (req, res) => {
 //update url
 app.post('/urls/:id', (req, res) => {
   let updateURL = req.body.longURL;
-  urlDatabase[req.params.id].longURL = `http://${updateURL}`;
-  res.redirect('/urls');
+  // handover to urlOwnershipValidator to check if this user own this url
+  if (urlOwnershipValidator(req.cookies.user_id, req.params.id, urlDatabase)){
+    urlDatabase[req.params.id].longURL = `http://${updateURL}`;
+    res.redirect('/urls');
+  } else {
+    res.send('You do not own this url');
+  }
 })
 
 // delete existing url
@@ -173,6 +187,14 @@ function registrationValidator(newUser){
     if (users[user].email === newUser.email) return false;
   }
   return true;
+}
+
+// this function will valide the ownership of a url
+function urlOwnershipValidator (userCookie, shortURL, database) {
+  for (url in database){
+    if(database[url].userID === userCookie && url === shortURL) return true;
+  }
+  return false;
 }
 
 // this function check if there is a currently logged in user
