@@ -1,4 +1,5 @@
 var express = require("express");
+const methodOverride = require('method-override');
 var app = express();
 const bodyParser = require('body-parser');
 var PORT = 8080; // default port 8080
@@ -9,6 +10,7 @@ var cookieSession = require('cookie-session')
 //config environment
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(methodOverride('_method'));
 app.use(cookieSession({
   name: 'session',
   keys: ['Lijing is the best'],
@@ -111,7 +113,7 @@ app.post('/urls', (req, res) => {
 })
 
 //update url
-app.post('/urls/:id', (req, res) => {
+app.put('/urls/:id', (req, res) => {
   let updateURL = req.body.longURL;
   // if user is not logged in, redirect to login
   if (!cookieValidator(req.session.user_id, users)){
@@ -126,7 +128,7 @@ app.post('/urls/:id', (req, res) => {
 })
 
 // delete existing url
-app.post('/urls/:id/delete', (req, res) => {
+app.delete('/urls/:id/delete', (req, res) => {
   // give user correct info whether they are not login, or they do not own the url
   // hiding the button is not the perfect way as a post request can be sent from curl or postman
   if (!cookieValidator(req.session.user_id, users)){

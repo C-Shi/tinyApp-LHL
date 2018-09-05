@@ -10,7 +10,7 @@
     <% if (longURL.hasOwnProperty(shortURL)) { %>
       <div>
         <h3>ShortURL: <a href="<%= longURL[shortURL]%>"><%= shortURL%></a></h3>
-        <form action="/urls/<%= shortURL%>" method="POST">
+        <form action="/urls/<%= shortURL%>?_method=PUT" method="POST">
           <input name="longURL" value="<%= longURL[shortURL].longURL %>" style="width: 300px;">
           <button>Update</button>
         </form>
