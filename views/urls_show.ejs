@@ -11,7 +11,7 @@
       <div>
         <h3>ShortURL: <a href="<%= longURL[shortURL]%>"><%= shortURL%></a></h3>
         <form action="/urls/<%= shortURL%>" method="POST">
-          <input name="longURL" placeholder="<%= longURL[shortURL] %>" style="width: 300px;">
+          <input name="longURL" value="<%= longURL[shortURL].longURL %>" style="width: 300px;">
           <button>Update</button>
         </form>
       </div>

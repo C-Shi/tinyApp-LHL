@@ -11,8 +11,10 @@ app.use(cookieParser());
 
 // global object for long-short url pairs
 var urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    longURL: "http://www.lighthouselabs.ca",
+    userID: "j1Dn4r"
+  },
 };
 
 // global object for user info
@@ -65,7 +67,7 @@ app.get('/urls/:id', (req, res) => {
 
 app.get('/u/:shortURL', (req, res) => {
   let shortURL = req.params.shortURL;
-  let longURL = urlDatabase[shortURL];
+  let longURL = urlDatabase[shortURL].longURL;
   if (longURL) {
     res.redirect(longURL);
   }else {
@@ -83,14 +85,14 @@ app.get('/register', (req, res) => {
 // add new url
 app.post('/urls', (req, res) => {
   let shortURL = generateRandomString();
-  urlDatabase[shortURL] = `http://${req.body.longURL}`;
+  urlDatabase[shortURL].longURL = `http://${req.body.longURL}`;
   res.redirect(`/urls/${shortURL}`)
 })
 
 //update url
 app.post('/urls/:id', (req, res) => {
   let updateURL = req.body.longURL;
-  urlDatabase[req.params.id] = `http://${updateURL}`;
+  urlDatabase[req.params.id].longURL = `http://${updateURL}`;
   res.redirect('/urls');
 })
 
