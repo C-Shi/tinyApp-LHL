@@ -1,14 +1,18 @@
 var express = require("express");
-const cookieParser = require('cookie-parser')
 var app = express();
 const bodyParser = require('body-parser');
 var PORT = 8080; // default port 8080
 const bcrypt = require('bcrypt');
+var cookieSession = require('cookie-session')
+
 
 //config environment
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['Lijing is the best'],
+}))
 
 // global object for long-short url pairs
 var urlDatabase = {
@@ -50,15 +54,15 @@ app.get('/login', (req, res) => {
 app.get("/urls", (req, res) => {
   let templateVars = { 
     urls: urlDatabase,
-    user: cookieValidator(req.cookies.user_id, users)
+    user: cookieValidator(req.session.user_id, users)
   };
   res.render("urls_index", templateVars);
 });
 
 app.get('/urls/new', (req, res) => {
-  if (cookieValidator(req.cookies.user_id, users)){
+  if (cookieValidator(req.session.user_id, users)){
     let templateVars = {
-      user: cookieValidator(req.cookies.user_id, users)
+      user: cookieValidator(req.session.user_id, users)
     }
     res.render('urls_new.ejs', templateVars);
   }else {
@@ -70,7 +74,7 @@ app.get('/urls/:id', (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
     longURL: urlDatabase,
-    user: cookieValidator(req.cookies.user_id, users)
+    user: cookieValidator(req.session.user_id, users)
   };
   res.render('urls_show', templateVars);
 })
@@ -94,11 +98,11 @@ app.get('/register', (req, res) => {
 
 // add new url
 app.post('/urls', (req, res) => {
-  if (cookieValidator(req.cookies.user_id, users)){
+  if (cookieValidator(req.session.user_id, users)){
     let shortURL = generateRandomString();
     urlDatabase[shortURL] = {
       longURL: `http://${req.body.longURL}`,
-      userID: req.cookies.user_id
+      userID: req.session.user_id
     }
     res.redirect(`/urls/${shortURL}`)
   }else {
@@ -110,9 +114,9 @@ app.post('/urls', (req, res) => {
 app.post('/urls/:id', (req, res) => {
   let updateURL = req.body.longURL;
   // if user is not logged in, redirect to login
-  if (!cookieValidator(req.cookies.user_id, users)){
+  if (!cookieValidator(req.session.user_id, users)){
     res.redirect('/login');
-  } else if (urlOwnershipValidator(req.cookies.user_id, req.params.id, urlDatabase)){
+  } else if (urlOwnershipValidator(req.session.user_id, req.params.id, urlDatabase)){
     // handover to urlOwnershipValidator to check if this user own this url
     urlDatabase[req.params.id].longURL = `http://${updateURL}`;
     res.redirect('/urls');
@@ -125,9 +129,9 @@ app.post('/urls/:id', (req, res) => {
 app.post('/urls/:id/delete', (req, res) => {
   // give user correct info whether they are not login, or they do not own the url
   // hiding the button is not the perfect way as a post request can be sent from curl or postman
-  if (!cookieValidator(req.cookies.user_id, users)){
+  if (!cookieValidator(req.session.user_id, users)){
     res.redirect('/login');
-  }else if (urlOwnershipValidator(req.cookies.user_id, req.params.id, urlDatabase)){
+  }else if (urlOwnershipValidator(req.session.user_id, req.params.id, urlDatabase)){
     let shortURL = req.params.id;
     delete urlDatabase[shortURL];
     res.redirect('/urls');
@@ -146,8 +150,8 @@ app.post('/login', (req, res) => {
   // hand over to loginValidator to check if this login is valid
   if (validUser){
     let cookie = validUser.id;
-    // express will send back the username as cookie via res.cookie()
-    res.cookie('user_id', cookie);
+    // express will send back the username as cookie via session
+    req.session.user_id = cookie;
     res.redirect('/');
   } else {
     res.statusCode = 403;
@@ -157,8 +161,8 @@ app.post('/login', (req, res) => {
 
 // logout route
 app.post('/logout', (req, res) => {
-  // this will clear out the cookies named 'user_id'
-  res.clearCookie('user_id');
+  // set req.session to null to destroy all the cookie
+  req.session = null;
   res.redirect('/urls');
 })
 
@@ -173,13 +177,12 @@ app.post('/register', (req, res) => {
   // registration error will be handled by a separate function - registrationValidator
   if(registrationValidator(newUser)){
     users[userID] = newUser;
-    res.cookie('user_id', userID);
+    req.session.user_id = userID;
     res.redirect('/urls');
   }else {
     res.statusCode = 400;
     res.send(res.statusCode);
   }
-  console.log(users);
 })
 
 
