@@ -30,6 +30,11 @@ app.get("/", (req, res) => {
   res.send('HOME');
 });
 
+// render login form
+app.get('/login', (req, res) => {
+  res.render('_login');
+})
+
 app.get("/urls", (req, res) => {
   let templateVars = { 
     urls: urlDatabase,
