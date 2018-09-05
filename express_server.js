@@ -7,14 +7,24 @@ var PORT = 8080; // default port 8080
 //config environment
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(cookieParser())
+app.use(cookieParser());
 
+// global object for long-short url pairs
 var urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
 
-// get request
+// global object for user info
+const users = {
+  'j1Dn4r': {
+    id: 'j1Dn4r',
+    email: 'hello@example.com',
+    password: '800300'
+  },
+}
+
+//  **************** get request *******************
 
 app.get("/", (req, res) => {
   res.send('HOME');
@@ -52,6 +62,11 @@ app.get('/u/:shortURL', (req, res) => {
   }else {
     res.send('Cannot find');
   }
+})
+
+// register route - render form
+app.get('/register', (req, res) => {
+  res.render('_register');
 })
 
 //  *********** post request *************
@@ -94,6 +109,26 @@ app.post('/logout', (req, res) => {
   res.redirect('/urls');
 })
 
+// register route - post user
+app.post('/register', (req, res) => {
+  let userID = generateRandomString();
+  let newUser = {
+    id: userID,
+    email: req.body.email,
+    password: req.body.password
+  }
+  // registration error will be handled by a separate function - registrationValidator
+  if(registrationValidator(newUser)){
+    users[userID] = newUser;
+    res.cookie('user_id', userID);
+    res.redirect('/urls');
+  }else {
+    res.statusCode = 400;
+    res.send(res.statusCode);
+  }
+})
+
+
 // listen route
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
@@ -103,10 +138,19 @@ app.listen(PORT, () => {
 // temporary function 
 function generateRandomString() {
   const str = '0123456789qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM';
-  let shortURL = '';
+  let random = '';
   for (let i = 0; i < 6; i++){
-    shortURL += str[Math.floor(Math.random() * str.length)]
+    random += str[Math.floor(Math.random() * str.length)]
   }
+  return random;
+}
 
-  return shortURL;
+function registrationValidator(newUser){
+  // reject registration if no email or password provide
+  if (!newUser.email || !newUser.password) return false;
+  // reject registration if email has already exist
+  for (user in users){
+    if (users[user].email === newUser.email) return false;
+  }
+  return true;
 }
