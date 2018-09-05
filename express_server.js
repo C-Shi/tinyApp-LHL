@@ -99,11 +99,21 @@ app.post('/urls/:id/delete', (req, res) => {
 
 // login route
 app.post('/login', (req, res) => {
-  // username will be sent through html form
-  let cookie = req.body.username;
-  // express will send back the username as cookie via res.cookie()
-  res.cookie('username', cookie);
-  res.redirect('/urls');
+  let thisUser = {
+    email: req.body.email,
+    password: req.body.password
+  }
+  let validUser = loginValidator(thisUser, users);
+  // hand over to loginValidator to check if this login is valid
+  if (validUser){
+    let cookie = validUser.id;
+    // express will send back the username as cookie via res.cookie()
+    res.cookie('user_id', cookie);
+    res.redirect('/');
+  } else {
+    res.statusCode = 403;
+    res.send(res.statusCode);
+  }
 })
 
 // logout route
@@ -165,3 +175,14 @@ function cookieValidator (cookie, users) {
   }
   return undefined;
 } 
+
+function loginValidator(thisUser, users){
+  // pass login if username and password match
+  for (user in users){
+    if (users[user].email === thisUser.email && users[user].password === thisUser.password) {
+      return users[user]; // this will return not only 'true' value, but also actual user that contains info
+    }
+  }
+  // reject login if: 1. user not found (including submit empty form), 2: email or password does not match
+  return false;
+}
