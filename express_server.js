@@ -29,7 +29,7 @@ const users = {
     password: 'hello'
   },
   'lds35r': {
-    id: 'j1Dn4r',
+    id: 'lds35r',
     email: 'home@home.com',
     password: 'home'
   }
@@ -101,8 +101,11 @@ app.post('/urls', (req, res) => {
 //update url
 app.post('/urls/:id', (req, res) => {
   let updateURL = req.body.longURL;
-  // handover to urlOwnershipValidator to check if this user own this url
-  if (urlOwnershipValidator(req.cookies.user_id, req.params.id, urlDatabase)){
+  // if user is not logged in, redirect to login
+  if (!cookieValidator(req.cookies.user_id, users)){
+    res.redirect('/login');
+  } else if (urlOwnershipValidator(req.cookies.user_id, req.params.id, urlDatabase)){
+    // handover to urlOwnershipValidator to check if this user own this url
     urlDatabase[req.params.id].longURL = `http://${updateURL}`;
     res.redirect('/urls');
   } else {
@@ -112,9 +115,17 @@ app.post('/urls/:id', (req, res) => {
 
 // delete existing url
 app.post('/urls/:id/delete', (req, res) => {
-  let shortURL = req.params.id;
-  delete urlDatabase[shortURL];
-  res.redirect('/urls');
+  // give user correct info whether they are not login, or they do not own the url
+  // hiding the button is not the perfect way as a post request can be sent from curl or postman
+  if (!cookieValidator(req.cookies.user_id, users)){
+    res.redirect('/login');
+  }else if (urlOwnershipValidator(req.cookies.user_id, req.params.id, urlDatabase)){
+    let shortURL = req.params.id;
+    delete urlDatabase[shortURL];
+    res.redirect('/urls');
+  }else {
+    res.send('You do not own this url');
+  }
 })
 
 // login route
