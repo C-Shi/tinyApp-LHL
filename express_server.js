@@ -20,11 +20,15 @@ app.use(cookieSession({
 var urlDatabase = {
   "b2xVn2": {
     longURL: "http://www.lighthouselabs.ca",
-    userID: "j1Dn4r"
+    userID: "j1Dn4r",
+    visits: 0,
+    visitor: []
   },
   '7xgF3d': {
     longURL: "http://www.google.com",
-    userID: "lds35r"
+    userID: "lds35r",
+    visits: 0,
+    visitor: []
   }
 };
 
@@ -85,6 +89,7 @@ app.get('/u/:shortURL', (req, res) => {
   let shortURL = req.params.shortURL;
   let longURL = urlDatabase[shortURL].longURL;
   if (longURL) {
+    urlDatabase[shortURL].visits++;
     res.redirect(longURL);
   }else {
     res.send('Cannot find');

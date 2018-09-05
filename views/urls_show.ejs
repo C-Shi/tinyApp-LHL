@@ -9,7 +9,8 @@
     <!-- check if shortURL is in the database, if not then tell user it is not found -->
     <% if (longURL.hasOwnProperty(shortURL)) { %>
       <div>
-        <h3>ShortURL: <a href="<%= longURL[shortURL]%>"><%= shortURL%></a></h3>
+        <h3>ShortURL: <a href="/u/<%= shortURL%>"><%= shortURL%></a></h3>
+        <p>This URL has been visited: <%= longURL[shortURL].visits%></p>
         <form action="/urls/<%= shortURL%>?_method=PUT" method="POST">
           <input name="longURL" value="<%= longURL[shortURL].longURL %>" style="width: 300px;">
           <button>Update</button>
