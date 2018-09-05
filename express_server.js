@@ -38,7 +38,7 @@ const users = {
 //  **************** get request *******************
 
 app.get("/", (req, res) => {
-  res.send('HOME');
+  res.redirect('/urls');
 });
 
 // render login form

@@ -6,14 +6,23 @@
   </head>
   <body>
     <% include ./partials/_header.ejs %>
-    <% for (url in urls){ %>
-      <div>
-        <%= url%>: <a href="#"><%= urls[url].longURL%></a> &nbsp; 
-        <a href="/urls/<%= url%>">Edit</a>
-        <form method="POST" action="/urls/<%= url %>/delete" style="display:inline">
-          <button>Delete</button>
-        </form>
-      </div>
+    <% if (user) { %>
+      <!-- if user exist check url ownership -->
+      <% for (url in urls){ %>
+        <!-- check if this particular url is owned by this particular owner -->
+        <% if (urls[url].userID === user.id){ %>
+          <div>
+            <%= url%>: <a href="#"><%= urls[url].longURL%></a> &nbsp; 
+            <a href="/urls/<%= url%>">Edit</a>
+            <form method="POST" action="/urls/<%= url %>/delete" style="display:inline">
+              <button>Delete</button>
+            </form>
+          </div>
+        <% } %>
+      <% } %> 
+      <!-- if no user, show info encourage user to login or register -->
+    <% }else{ %>
+      <h2>Unfortunately, In order to use this app, you must login</h2>
     <% } %>
   </body>
 </html>
