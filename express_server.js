@@ -19,8 +19,8 @@ var urlDatabase = {
 const users = {
   'j1Dn4r': {
     id: 'j1Dn4r',
-    email: 'hello@example.com',
-    password: '800300'
+    email: 'hello@hello.com',
+    password: 'hello'
   },
 }
 
@@ -44,10 +44,14 @@ app.get("/urls", (req, res) => {
 });
 
 app.get('/urls/new', (req, res) => {
-  let templateVars = {
-    user: cookieValidator(req.cookies.user_id, users)
+  if (cookieValidator(req.cookies.user_id, users)){
+    let templateVars = {
+      user: cookieValidator(req.cookies.user_id, users)
+    }
+    res.render('urls_new.ejs', templateVars);
+  }else {
+    res.redirect('/login');
   }
-  res.render('urls_new.ejs', templateVars);
 })
 
 app.get('/urls/:id', (req, res) => {
@@ -169,6 +173,7 @@ function registrationValidator(newUser){
   return true;
 }
 
+// this function check if there is a currently logged in user
 function cookieValidator (cookie, users) {
   if (cookie in users) {
     return users[cookie];
