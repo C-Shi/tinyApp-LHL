@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser')
 var app = express();
 const bodyParser = require('body-parser');
 var PORT = 8080; // default port 8080
+const bcrypt = require('bcrypt');
 
 //config environment
 app.set('view engine', 'ejs');
@@ -26,12 +27,12 @@ const users = {
   'j1Dn4r': {
     id: 'j1Dn4r',
     email: 'hello@hello.com',
-    password: 'hello'
+    password: bcrypt.hashSync('hello', 10)
   },
   'lds35r': {
     id: 'lds35r',
     email: 'home@home.com',
-    password: 'home'
+    password: bcrypt.hashSync('home', 10)
   }
 }
 
@@ -93,9 +94,16 @@ app.get('/register', (req, res) => {
 
 // add new url
 app.post('/urls', (req, res) => {
-  let shortURL = generateRandomString();
-  urlDatabase[shortURL].longURL = `http://${req.body.longURL}`;
-  res.redirect(`/urls/${shortURL}`)
+  if (cookieValidator(req.cookies.user_id, users)){
+    let shortURL = generateRandomString();
+    urlDatabase[shortURL] = {
+      longURL: `http://${req.body.longURL}`,
+      userID: req.cookies.user_id
+    }
+    res.redirect(`/urls/${shortURL}`)
+  }else {
+    res.send('/login');
+  }
 })
 
 //update url
@@ -160,7 +168,7 @@ app.post('/register', (req, res) => {
   let newUser = {
     id: userID,
     email: req.body.email,
-    password: req.body.password
+    password: bcrypt.hashSync(req.body.password, 10)
   }
   // registration error will be handled by a separate function - registrationValidator
   if(registrationValidator(newUser)){
@@ -171,6 +179,7 @@ app.post('/register', (req, res) => {
     res.statusCode = 400;
     res.send(res.statusCode);
   }
+  console.log(users);
 })
 
 
@@ -219,7 +228,7 @@ function cookieValidator (cookie, users) {
 function loginValidator(thisUser, users){
   // pass login if email and password match
   for (user in users){
-    if (users[user].email === thisUser.email && users[user].password === thisUser.password) {
+    if (users[user].email === thisUser.email && bcrypt.compareSync(thisUser.password, users[user].password)) {
       return users[user]; // this will return not only 'true' value, but also actual user that contains info
     }
   }
