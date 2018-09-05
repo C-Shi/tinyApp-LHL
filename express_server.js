@@ -118,7 +118,7 @@ app.post('/login', (req, res) => {
 
 // logout route
 app.post('/logout', (req, res) => {
-  // this will clear out the cookies named 'username'
+  // this will clear out the cookies named 'user_id'
   res.clearCookie('user_id');
   res.redirect('/urls');
 })
@@ -177,7 +177,7 @@ function cookieValidator (cookie, users) {
 } 
 
 function loginValidator(thisUser, users){
-  // pass login if username and password match
+  // pass login if email and password match
   for (user in users){
     if (users[user].email === thisUser.email && users[user].password === thisUser.password) {
       return users[user]; // this will return not only 'true' value, but also actual user that contains info
