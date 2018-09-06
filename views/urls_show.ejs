@@ -9,6 +9,7 @@
             <h3>ShortURL: <a href="/u/<%= shortURL%>">tinyApp.ca/u/<%= shortURL%></a></h3>
             <p>This URL has been visited: <span class="emphasis"><%= longURL[shortURL].visits %></span></p>
             <p>This URL has been visited by: <span class="emphasis"><%= longURL[shortURL].visitor.length %></span> unique users</p>
+            <p><a href="/urls/<%= shortURL%>/visitor">View Visitor Log</a></p>
             <p style="display: inline">Created At <%= longURL[shortURL].createdAt%></p>
           </div>
           <div class="col-md-6">

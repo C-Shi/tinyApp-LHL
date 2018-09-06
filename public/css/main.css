@@ -26,6 +26,10 @@ html, body {
   margin-top: 50px;
 }
 
+.counter {
+  font-size:1.2em;
+}
+
 #welcome {
   color:#fff;
 }
