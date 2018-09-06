@@ -79,6 +79,13 @@ app.get('/urls/new', (req, res) => {
 })
 
 app.get('/urls/:id', (req, res) => {
+  if(!cookieValidator(req.session.user_id, users)){
+    res.redirect('/login');
+  }
+  if (!urlOwnershipValidator(req.session.user_id, req.params.id, urlDatabase)){
+    res.statusCode = 403;
+    res.send('You Do Not Own this URL. Do Not Try to Bypass');
+  }
   let templateVars = {
     shortURL: req.params.id,
     longURL: urlDatabase,
