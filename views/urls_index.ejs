@@ -17,9 +17,12 @@
             <form method="POST" action="/urls/<%= url %>/delete?_method=DELETE" style="display:inline">
               <button>Delete</button>
             </form>
+            <p style="display:inline"><%= urls[url].visits%> visits with <%= urls[url].length || 0 %> unique user</p>
+            <p style="display: inline">Created At <%= urls[url].createdAt%></p>
           </div>
         <% } %>
       <% } %> 
+      <a href="/urls/new">Create a new short Link</a>
       <!-- if no user, show info encourage user to login or register -->
     <% }else{ %>
       <h2>Unfortunately, In order to use this app, you must login</h2>

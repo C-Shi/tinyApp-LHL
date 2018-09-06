@@ -24,13 +24,15 @@ var urlDatabase = {
     longURL: "http://www.lighthouselabs.ca",
     userID: "j1Dn4r",
     visits: 0,
-    visitor: []
+    visitor: [],
+    createdAt: '2012-04-05'
   },
   '7xgF3d': {
     longURL: "http://www.google.com",
     userID: "lds35r",
     visits: 0,
-    visitor: []
+    visitor: [],
+    createdAt: '2018-05-05'
   }
 };
 
@@ -51,26 +53,35 @@ const users = {
 //  **************** get request *******************
 
 app.get("/", (req, res) => {
-  res.redirect('/urls');
+  if (req.session.user_id){
+    res.redirect('/urls');
+  }else {
+    res.redirect('/login');
+  }
 });
 
 // render login form
 app.get('/login', (req, res) => {
-  res.render('_login');
+  // block user from log in multiple time
+  if (req.session.user_id){
+    res.redirect('/urls');
+  }else {
+    res.render('_login');
+  }
 })
 
 app.get("/urls", (req, res) => {
   let templateVars = { 
     urls: urlDatabase,
-    user: cookieValidator(req.session.user_id, users)
+    user: cookieFinder(req.session.user_id, users)
   };
   res.render("urls_index", templateVars);
 });
 
 app.get('/urls/new', (req, res) => {
-  if (cookieValidator(req.session.user_id, users)){
+  if (req.session.user_id){
     let templateVars = {
-      user: cookieValidator(req.session.user_id, users)
+      user: cookieFinder(req.session.user_id, users)
     }
     res.render('urls_new.ejs', templateVars);
   }else {
@@ -79,7 +90,10 @@ app.get('/urls/new', (req, res) => {
 })
 
 app.get('/urls/:id', (req, res) => {
-  if(!cookieValidator(req.session.user_id, users)){
+  if (!(req.params.id in urlDatabase)){
+    res.send('Oh, this URL seems not exist')
+  }
+  if(!req.session.user_id){
     res.redirect('/login');
   }
   if (!urlOwnershipValidator(req.session.user_id, req.params.id, urlDatabase)){
@@ -89,13 +103,18 @@ app.get('/urls/:id', (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
     longURL: urlDatabase,
-    user: cookieValidator(req.session.user_id, users)
+    user: cookieFinder(req.session.user_id, users)
   };
   res.render('urls_show', templateVars);
 })
 
 app.get('/u/:shortURL', (req, res) => {
   let shortURL = req.params.shortURL;
+  // check if short url actually exist
+  if (!urlDatabase[shortURL]){
+    res.send('404 Cannot find this page');
+  }
+
   let longURL = urlDatabase[shortURL].longURL;
   if (longURL) {
     urlDatabase[shortURL].visits++;
@@ -131,18 +150,25 @@ app.get('/u/:shortURL', (req, res) => {
 
 // register route - render form
 app.get('/register', (req, res) => {
-  res.render('_register');
+  if(req.session.user_id){
+    res.redirect('/urls');
+  } else {
+    res.render('_register');
+  }
 })
 
 //  *********** post request *************
 
 // add new url
 app.post('/urls', (req, res) => {
-  if (cookieValidator(req.session.user_id, users)){
+  if (req.session.user_id){
     let shortURL = generateRandomString();
     urlDatabase[shortURL] = {
       longURL: `http://${req.body.longURL}`,
-      userID: req.session.user_id
+      userID: req.session.user_id,
+      visits: 0,
+      visitor: [],
+      createdAt: req.timestamp.format('YYYY-MM-DD')
     }
     res.redirect(`/urls/${shortURL}`)
   }else {
@@ -154,11 +180,12 @@ app.post('/urls', (req, res) => {
 app.put('/urls/:id', (req, res) => {
   let updateURL = req.body.longURL;
   // if user is not logged in, redirect to login
-  if (!cookieValidator(req.session.user_id, users)){
+  if (!req.session.user_id){
     res.redirect('/login');
   } else if (urlOwnershipValidator(req.session.user_id, req.params.id, urlDatabase)){
     // handover to urlOwnershipValidator to check if this user own this url
     urlDatabase[req.params.id].longURL = `http://${updateURL}`;
+    urlDatabase[req.params.id].createdAt = req.timestamp.format('YYYY-MM-DD');
     res.redirect('/urls');
   } else {
     res.send('You do not own this url');
@@ -169,7 +196,7 @@ app.put('/urls/:id', (req, res) => {
 app.delete('/urls/:id/delete', (req, res) => {
   // give user correct info whether they are not login, or they do not own the url
   // hiding the button is not the perfect way as a post request can be sent from curl or postman
-  if (!cookieValidator(req.session.user_id, users)){
+  if (!req.session.user_id){
     res.redirect('/login');
   }else if (urlOwnershipValidator(req.session.user_id, req.params.id, urlDatabase)){
     let shortURL = req.params.id;
@@ -182,6 +209,10 @@ app.delete('/urls/:id/delete', (req, res) => {
 
 // login route
 app.post('/login', (req, res) => {
+  // block user from log in multiple time
+  if (req.session.user_id){
+    res.redirect('/urls');
+  }
   let thisUser = {
     email: req.body.email,
     password: req.body.password
@@ -260,8 +291,8 @@ function urlOwnershipValidator (userCookie, shortURL, database) {
   return false;
 }
 
-// this function check if there is a currently logged in user
-function cookieValidator (cookie, users) {
+// this function check find and return the correct user based on cookie
+function cookieFinder (cookie, users) {
   if (cookie in users) {
     return users[cookie];
   }

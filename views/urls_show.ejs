@@ -12,6 +12,7 @@
         <h3>ShortURL: <a href="/u/<%= shortURL%>"><%= shortURL%></a></h3>
         <p>This URL has been visited: <%= longURL[shortURL].visits%></p>
         <p>This URL has been visited by: <%= longURL[shortURL].visitor.length%> unique user</p>
+        <p style="display: inline">Created At <%= longURL[shortURL].createdAt%></p>
         <form action="/urls/<%= shortURL%>?_method=PUT" method="POST">
           <input name="longURL" value="<%= longURL[shortURL].longURL %>" style="width: 300px;">
           <button>Update</button>
