@@ -222,8 +222,10 @@ app.get('/urls/:id/visitor', (req, res) => {
 app.post('/urls', (req, res) => {
   if (req.session.user_id) {
     const shortURL = middleware.generateRandomString();
+    const URLregex = /^http/;
+    const longURL = (URLregex.test(req.body.longURL)) ? req.body.longURL : `http://${req.body.longURL}`;
     urlDatabase[shortURL] = {
-      longURL: `http://${req.body.longURL}`,
+      longURL,
       userID: req.session.user_id,
       visits: 0,
       visitor: [],
@@ -243,7 +245,9 @@ app.put('/urls/:id', (req, res) => {
     res.redirect('/login');
   } else if (middleware.urlOwnershipValidator(req.session.user_id, req.params.id, urlDatabase)) {
     // handover to urlOwnershipValidator to check if this user own this url
-    urlDatabase[req.params.id].longURL = `http://${updateURL}`;
+    const URLregex = /^http/;
+    const longURL = (URLregex.test(req.body.longURL)) ? req.body.longURL : `http://${req.body.longURL}`;
+    urlDatabase[req.params.id].longURL = longURL;
     urlDatabase[req.params.id].createdAt = req.timestamp.format('YYYY-MM-DD');
     res.redirect('/urls');
   } else {
@@ -313,6 +317,13 @@ app.post('/logout', (req, res) => {
 // register route - post user
 app.post('/register', (req, res) => {
   const userID = middleware.generateRandomString();
+  if (!req.body.email || req.body.password) {
+    const err = {
+      code: 403,
+      message: 'Email and Password cannot be blank',
+    };
+    res.render('_error', err);
+  }
   const newUser = {
     id: userID,
     email: req.body.email,
