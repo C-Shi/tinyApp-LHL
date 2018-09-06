@@ -90,6 +90,15 @@ app.get('/u/:shortURL', (req, res) => {
   let longURL = urlDatabase[shortURL].longURL;
   if (longURL) {
     urlDatabase[shortURL].visits++;
+    if(!req.session.visitor_id){
+      req.session.visitor_id = generateRandomString();
+    }
+    const visitorInfo = {
+      visitor_id: req.session.visitor_id,
+      timestamp: req
+    }
+    urlDatabase[shortURL].visitor.push(visitorInfo);
+    console.log(urlDatabase[shortURL].visitor);
     res.redirect(longURL);
   }else {
     res.send('Cannot find');
