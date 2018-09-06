@@ -10,7 +10,7 @@ This App is hosted on [tinyApp](https://tinyapp-cs-lhl.herokuapp.com/)
 For testing purpose, this app has a build-in account
   - Email: home@home.com
   - Password: home
-Please take an advantage of this 'fake' account for a quick experience
+  - Please take an advantage of this 'fake' account for a quick experience
 
 ![index](./docs/index.png)
 ![login](./docs/login.png)
