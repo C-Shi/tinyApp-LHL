@@ -8,7 +8,7 @@ const time = require('express-timestamp');
 const middleware = require('./middleware');
 
 // config global const
-const PORT = 8080;
+const PORT = process.env.PORT || 8080; // add process.env.PORT for deployment purpose
 const app = express();
 const urlDatabase = {
   b2xVn2: {
