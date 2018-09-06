@@ -43,3 +43,4 @@ node express_server.js
 ## Unsolved Bugs
 * User will be able to create multiple shortURL to the same long URL which take up space
 * Everytime a un-registered / un-logged user visit an URL, it will consider a unique visit regardless of his/her IP
+* If a user update an existing URL to a new address, Visits history will not be reset
