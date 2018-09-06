@@ -166,7 +166,7 @@ app.get('/u/:shortURL', (req, res) => {
         timestamp: req.timestamp,
       };
       urlDatabase[shortURL].visitor.push(visitorInfo);
-    } else if (!urlDatabase[shortURL].visitor.find(visitor => visitor.visitor_id === req.session.user_id)) {
+    } else if (!urlDatabase[shortURL].visitor.find(v => v.visitor_id === req.session.user_id)) {
       const visitorInfo = {
         visitor_id: req.session.user_id,
         timestamp: req.timestamp,
@@ -239,7 +239,6 @@ app.post('/urls', (req, res) => {
 
 // update url
 app.put('/urls/:id', (req, res) => {
-  const updateURL = req.body.longURL;
   // if user is not logged in, redirect to login
   if (!req.session.user_id) {
     res.redirect('/login');

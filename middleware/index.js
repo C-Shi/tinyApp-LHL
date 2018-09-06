@@ -14,6 +14,7 @@ module.exports = {
     // reject registration if no email or password provide
     if (!newUser.email || !newUser.password) return false;
     // reject registration if email has already exist
+
     for (const user in users) {
       if (users[user].email === newUser.email) return false;
     }
