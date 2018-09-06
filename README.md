@@ -2,6 +2,11 @@
 This is a full-stack web application built on NodeJS with Express framework. TinyApp allows user to create, read, update and delete their own short URL and share with the publics. User password and hashed so user's info is highly protected
 
 ## Final Porject Demo
+This App is hosted on [tinyApp](https://tinyapp-cs-lhl.herokuapp.com/)
+
+* Your will not be able to directly visit tinyApp.ca/u/<SHORT URL>
+* Instead use tinyapp-cs-lhl.herokuapp.com/u/<SHORT URL>
+
 For testing purpose, this app has a build-in account
   - Email: home@home.com
   - Password: home
@@ -34,3 +39,7 @@ npm install
 node express_server.js
 ```
 * Register a new user and getting started !
+
+## Unsolved Bugs
+* User will be able to create multiple shortURL to the same long URL which take up space
+* Everytime a un-registered / un-logged user visit an URL, it will consider a unique visit regardless of his/her IP
