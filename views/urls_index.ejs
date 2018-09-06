@@ -23,7 +23,7 @@
                 <!-- check if this particular url is owned by this particular owner -->
                 <% if (urls[url].userID === user.id){ %>
                   <tr>
-                    <td>tinyApp.ca/u/<%= url%>: </td>
+                    <td>tinyApp.ca/u/<%= url%> <i class="fas fa-arrow-right"></i> </td>
                     <td><a href="#"><%= urls[url].longURL%> <i class="far fa-hand-pointer"></i></a></td>
                     <td>
                       <a href="/urls/<%= url%>"><i class="far fa-edit"></i> Edit</a>
@@ -31,11 +31,11 @@
                         <button class="clear-link"><i class="far fa-trash-alt"></i> Delete</button>
                       </form>
                     </td>
-                    <td><%= urls[url].visits%></td>
-                    <td><%= urls[url].length || 0 %></td>
-                    <td><%= urls[url].createdAt%></td>
+                    <td><%= urls[url].visits %></td>
+                    <td><%= urls[url].visitor.length%> <a href="/urls/<%= url %>/visitor">Details</a></td>
+                    <td><%= urls[url].createdAt %></td>
                   </tr>
-                <% } %>
+                <% } %>         
               <% } %>
               <!-- if no user, show info encourage user to login or register -->
             </tbody>
@@ -52,5 +52,5 @@
         <% } %>
       </div>
     </div>
-      </body>
+  </body>
 </html>

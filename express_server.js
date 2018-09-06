@@ -25,6 +25,13 @@ const urlDatabase = {
     visitor: [],
     createdAt: '2018-05-05',
   },
+  '6yGl9B': {
+    longURL: 'http://www.cheng-shi.xyz',
+    userID: 'lds35r',
+    visits: 0,
+    visitor: [],
+    createdAt: '2018-08-17',
+  },
 };
 const users = {
   j1Dn4r: {
@@ -157,6 +164,26 @@ app.get('/register', (req, res) => {
   } else {
     res.render('_register');
   }
+});
+
+// request for visitor log
+app.get('/urls/:id/visitor', (req, res) => {
+  if (!(req.params.id in urlDatabase)) {
+    res.send('Oh, this URL seems not exist');
+  }
+  if (!req.session.user_id) {
+    res.redirect('/login');
+  }
+  if (!middleware.urlOwnershipValidator(req.session.user_id, req.params.id, urlDatabase)) {
+    res.statusCode = 403;
+    res.send('You Do Not Own this URL. Do Not Try to Bypass');
+  }
+  const templateVars = {
+    shortURL: req.params.id,
+    url: urlDatabase[req.params.id],
+    user: middleware.cookieFinder(req.session.user_id, users),
+  };
+  res.render('urls_visitor', templateVars);
 });
 
 //  *********** post request *************

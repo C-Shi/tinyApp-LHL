@@ -1,0 +1,25 @@
+<% include ./partials/_head.ejs %>
+  <body>
+    <% include ./partials/_header %>
+    <div class="container">
+      <div class="row">
+        <table class="table col-12">
+          <thead>
+            <tr>
+              <th>VisitorID</th>
+              <th>TimeStamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% url.visitor.forEach((unique) => { %>
+              <tr>
+                <td><%= unique.visitor_id %></td>
+                <td><%= unique.timestamp.format('YYYY-MM-DD') %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <a href="/urls" class="btn btn-secondary btn-sm">Go Back</a>
+      </div>
+    </div>
+  </body>
