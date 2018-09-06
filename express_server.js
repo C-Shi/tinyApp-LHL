@@ -281,7 +281,7 @@ app.delete('/urls/:id/delete', (req, res) => {
 
 // login route
 app.post('/login', (req, res) => {
-  if(!req.body.email || !req.body.password) {
+  if (!req.body.email || !req.body.password) {
     const err = {
       code: 403,
       message: 'Email and Password cannot be blank',
