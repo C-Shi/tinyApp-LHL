@@ -1,13 +1,34 @@
 <header>
-  <h1>Welcome to this tinyApp</h1>
-  <% if (user){ %>
-    <h5>Welcome! <%= user.email %></h5>
-    <form action="/logout" method="POST">
-      <button>logout</button>
-    </form>
-  <% }else{ %>
-    <a href="/login">Login</a>
-    <a href="/register">Register</a>
-  <% } %>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+          tinyApp | URL shortener
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            
+          </ul>
+          <% if (user){ %>
+            <a id="welcome">Welcome! <%= user.email %></a> &nbsp;
+            <form action="/logout" method="POST">
+              <button class="btn btn-danger btn-sm">logout</button>
+            </form>
+          <% }else{ %>
+            <a class="btn btn-success btn-sm" href="/login">Login</a>
+            &nbsp;
+            <a class="btn btn-warning btn-sm" href="/register">Register</a>
+          <% } %>
+        </div>
+      </nav>
+
+
+
+
+
+ 
+  
 </header>
 <br>

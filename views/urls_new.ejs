@@ -1,10 +1,19 @@
 <% include ./partials/_head.ejs %>
-  <body style="font-size:20px; padding:50px;">
+  <body>
     <% include ./partials/_header %>
-    <form action="/urls" method="POST" style="margin:150px;">
-      <label for="longURL">Enter a URL:</label>
-      <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
-      <input type="submit" value="Submit">
-    </form>
+    <div class="container">
+      <div class="row">
+        <div class="col-8">
+          <form action="/urls" method="POST">
+            <div class="form-group">
+              <label for="longURL">Enter a URL:</label>
+              <input id="longURL" type="text" name="longURL" placeholder="http://" class="form-control">
+            </div>
+            <input type="submit" value="Submit" class="btn btn-success">
+            <a href="/urls" class="btn btn-outline-secondary">Go Back</a>
+          </form>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

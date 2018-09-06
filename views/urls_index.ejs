@@ -1,26 +1,56 @@
 <% include ./partials/_head.ejs %>
   <body>
     <% include ./partials/_header.ejs %>
-    <% if (user) { %>
-      <!-- if user exist check url ownership -->
-      <% for (url in urls){ %>
-        <!-- check if this particular url is owned by this particular owner -->
-        <% if (urls[url].userID === user.id){ %>
-          <div>
-            <%= url%>: <a href="#"><%= urls[url].longURL%></a> &nbsp; 
-            <a href="/urls/<%= url%>">Edit</a>
-            <form method="POST" action="/urls/<%= url %>/delete?_method=DELETE" style="display:inline">
-              <button>Delete</button>
-            </form>
-            <p style="display:inline"><%= urls[url].visits%> visits with <%= urls[url].length || 0 %> unique user</p>
-            <p style="display: inline">Created At <%= urls[url].createdAt%></p>
+    <div class="container">
+      <div class="row">
+        <% if (user) { %>
+          <a href="/urls/new" class="btn btn-outline-success">Create a new short Link</a>
+          <table class="table" class="col-8 form">
+            <thead>
+              <tr>
+                <th scope="col">Short URL</th>
+                <th scope="col">Long URL</th>
+                <th scope="col">Action</th>
+                <th scope="col">Total Visits</th>
+                <th scope="col">Unique Visitors</th>
+                <th scope="col">Created At</th>
+              </tr>
+            </thead>
+    
+            <tbody>
+              <!-- if user exist check url ownership -->
+              <% for (url in urls){ %>
+                <!-- check if this particular url is owned by this particular owner -->
+                <% if (urls[url].userID === user.id){ %>
+                  <tr>
+                    <td>tinyApp.ca/u/<%= url%>: </td>
+                    <td><a href="#"><%= urls[url].longURL%> <i class="far fa-hand-pointer"></i></a></td>
+                    <td>
+                      <a href="/urls/<%= url%>"><i class="far fa-edit"></i> Edit</a>
+                      <form method="POST" action="/urls/<%= url %>/delete?_method=DELETE" style="display:inline">
+                        <button class="clear-link"><i class="far fa-trash-alt"></i> Delete</button>
+                      </form>
+                    </td>
+                    <td><%= urls[url].visits%></td>
+                    <td><%= urls[url].length || 0 %></td>
+                    <td><%= urls[url].createdAt%></td>
+                  </tr>
+                <% } %>
+              <% } %>
+              <!-- if no user, show info encourage user to login or register -->
+            </tbody>
+            </table>
+        <% }else{ %>
+          <div class="col-12 text-center">
+              <div class="jumbotron">
+                  <h1 class="display-4">Not Yet login ?</h1>
+                  <p class="lead">Unfortunately, In order to use this app, you must login</p>
+                  <hr class="my-4">
+                  <a class="btn btn-primary btn-lg" href="/login" role="button">Login</a>
+                </div>
           </div>
         <% } %>
-      <% } %> 
-      <a href="/urls/new">Create a new short Link</a>
-      <!-- if no user, show info encourage user to login or register -->
-    <% }else{ %>
-      <h2>Unfortunately, In order to use this app, you must login</h2>
-    <% } %>
-  </body>
+      </div>
+    </div>
+      </body>
 </html>

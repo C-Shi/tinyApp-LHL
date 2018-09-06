@@ -42,7 +42,7 @@ const users = {
 
 // config environment || set middleware
 app.set('view engine', 'ejs');
-app.use(express.static('public'));
+app.use(express.static('public/'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(time.init);
 app.use(methodOverride('_method'));
