@@ -4,12 +4,14 @@ var app = express();
 const bodyParser = require('body-parser');
 var PORT = 8080; // default port 8080
 const bcrypt = require('bcrypt');
-var cookieSession = require('cookie-session')
+var cookieSession = require('cookie-session');
+var time = require('express-timestamp')
 
 
 //config environment
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(time.init);
 app.use(methodOverride('_method'));
 app.use(cookieSession({
   name: 'session',
@@ -95,7 +97,7 @@ app.get('/u/:shortURL', (req, res) => {
     }
     const visitorInfo = {
       visitor_id: req.session.visitor_id,
-      timestamp: req
+      timestamp: req.timestamp
     }
     urlDatabase[shortURL].visitor.push(visitorInfo);
     console.log(urlDatabase[shortURL].visitor);
