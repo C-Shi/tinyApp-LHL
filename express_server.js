@@ -57,6 +57,14 @@ app.use(cookieSession({
   name: 'session',
   keys: ['Lijing is the best'],
 }));
+// apply 404 handler to all unknow routing
+app.use((req, res, next) => {
+  if (res.statusCode === 404) {
+    res.status(404).render('_error', { code: 404, message: 'Page Not Found' });
+  } else {
+    next();
+  }
+});
 
 
 //  **************** get request *******************
@@ -103,14 +111,23 @@ app.get('/urls/new', (req, res) => {
 // request for detail/edit url page
 app.get('/urls/:id', (req, res) => {
   if (!(req.params.id in urlDatabase)) {
-    res.send('Oh, this URL seems not exist');
+    res.statusCode = 404;
+    const err = {
+      code: 404,
+      message: 'Page Not Found! This URL seems not exist',
+    };
+    res.render('_error', err);
   }
   if (!req.session.user_id) {
     res.redirect('/login');
   }
   if (!middleware.urlOwnershipValidator(req.session.user_id, req.params.id, urlDatabase)) {
     res.statusCode = 403;
-    res.send('You Do Not Own this URL. Do Not Try to Bypass');
+    const err = {
+      code: 403,
+      message: 'You Do Not Own this URL. Do Not Try to Bypass',
+    };
+    res.render('_error', err);
   }
   const templateVars = {
     shortURL: req.params.id,
@@ -125,7 +142,12 @@ app.get('/u/:shortURL', (req, res) => {
   const { shortURL } = req.params;
   // check if short url actually exist
   if (!urlDatabase[shortURL]) {
-    res.send('404 Cannot find this page');
+    res.statusCode = 404;
+    const err = {
+      code: 404,
+      message: 'What are you looking for? This page does not exist',
+    };
+    res.render('_error', err);
   }
 
   const { longURL } = urlDatabase[shortURL];
@@ -169,14 +191,23 @@ app.get('/register', (req, res) => {
 // request for visitor log
 app.get('/urls/:id/visitor', (req, res) => {
   if (!(req.params.id in urlDatabase)) {
-    res.send('Oh, this URL seems not exist');
+    res.statusCode = 404;
+    const err = {
+      code: 404,
+      message: 'What are you talking about? I don\'t find this URL',
+    };
+    res.render('_error', err);
   }
   if (!req.session.user_id) {
     res.redirect('/login');
   }
   if (!middleware.urlOwnershipValidator(req.session.user_id, req.params.id, urlDatabase)) {
     res.statusCode = 403;
-    res.send('You Do Not Own this URL. Do Not Try to Bypass');
+    const err = {
+      code: 403,
+      message: 'You Do Not Own this URL. Do Not Try to Bypass',
+    };
+    res.render('_error', err);
   }
   const templateVars = {
     shortURL: req.params.id,
@@ -200,7 +231,7 @@ app.post('/urls', (req, res) => {
     };
     res.redirect(`/urls/${shortURL}`);
   } else {
-    res.send('/login');
+    res.redirect('/login');
   }
 });
 
@@ -216,7 +247,12 @@ app.put('/urls/:id', (req, res) => {
     urlDatabase[req.params.id].createdAt = req.timestamp.format('YYYY-MM-DD');
     res.redirect('/urls');
   } else {
-    res.send('You do not own this url');
+    res.statusCode = 403;
+    const err = {
+      code: 403,
+      message: 'You do not own this url',
+    };
+    res.render('_error', err);
   }
 });
 
@@ -231,7 +267,12 @@ app.delete('/urls/:id/delete', (req, res) => {
     delete urlDatabase[shortURL];
     res.redirect('/urls');
   } else {
-    res.send('You do not own this url');
+    res.statusCode = 403;
+    const err = {
+      code: 403,
+      message: 'You do not own this url',
+    };
+    res.render('_error', err);
   }
 });
 
@@ -254,7 +295,11 @@ app.post('/login', (req, res) => {
     res.redirect('/');
   } else {
     res.statusCode = 403;
-    res.send(res.statusCode);
+    const err = {
+      code: 403,
+      message: 'Your login is invalid!',
+    };
+    res.render('_error', err);
   }
 });
 
@@ -280,7 +325,11 @@ app.post('/register', (req, res) => {
     res.redirect('/urls');
   } else {
     res.statusCode = 400;
-    res.send(res.statusCode);
+    const err = {
+      code: 400,
+      message: 'Hey! This email exist! Please login',
+    };
+    res.render('_error', err);
   }
 });
 
