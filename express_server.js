@@ -281,6 +281,13 @@ app.delete('/urls/:id/delete', (req, res) => {
 
 // login route
 app.post('/login', (req, res) => {
+  if(!req.body.email || !req.body.password) {
+    const err = {
+      code: 403,
+      message: 'Email and Password cannot be blank',
+    };
+    res.render('_error', err);
+  }
   // block user from log in multiple time
   if (req.session.user_id) {
     res.redirect('/urls');
@@ -316,7 +323,7 @@ app.post('/logout', (req, res) => {
 // register route - post user
 app.post('/register', (req, res) => {
   const userID = middleware.generateRandomString();
-  if (!req.body.email || req.body.password) {
+  if (!req.body.email || !req.body.password) {
     const err = {
       code: 403,
       message: 'Email and Password cannot be blank',
