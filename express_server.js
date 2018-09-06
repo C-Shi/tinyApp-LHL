@@ -5,11 +5,13 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
 const time = require('express-timestamp');
+// middleware object for all helper function inside a different module
 const middleware = require('./middleware');
 
 // config global const
 const PORT = process.env.PORT || 8080; // add process.env.PORT for deployment purpose
 const app = express();
+// sample database
 const urlDatabase = {
   b2xVn2: {
     longURL: 'http://www.lighthouselabs.ca',
