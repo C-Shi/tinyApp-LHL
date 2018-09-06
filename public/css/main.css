@@ -22,6 +22,10 @@ html, body {
 
 }
 
+.plain-form {
+  margin-top: 50px;
+}
+
 #welcome {
   color:#fff;
 }

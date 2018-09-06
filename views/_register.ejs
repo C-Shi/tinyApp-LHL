@@ -1,18 +1,28 @@
 <% include ./partials/_head.ejs %>
-<div class="container">
+<div class="container plain-form">
   <div class="row">
-    <form action="/register" method="POST" class="col-8 form">
-      <h3 class="text-center">Register with us</h3>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" name="email" placeholder="youremail@email.com" class="form-control" required>
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" name="password" placeholder="********" class="form-control" required>
-      </div>
-      <button class="btn btn-outline-success btn-lg">Register</button>
-      <a href="/login" class="btn btn-outline-secondary btn-lg">Aleady Registered? Login</a>
-    </form>
+    <div class="col-md-6">
+      <form action="/register" method="POST" class="col-8 form">
+        <h3 class="text-center">Register With Us</h3>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="youremail@email.com" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="********" class="form-control" required>
+        </div>
+        <button class="btn btn-outline-success btn-lg">Register</button>
+        <a href="/login" class="btn btn-outline-secondary btn-lg">Returning User</a>
+      </form>
+    </div>
+    <div class="col-md-6">
+        <div class="jumbotron">
+            <h1 class="display-4">TinyApp is Here</h1>
+            <p class="lead">tinyApp is a simple database GUI to help you maintain your shorten URL</p>
+            <hr class="my-4">
+            <p>We will not share your information with anyone else</p>
+          </div>
+    </div>
   </div>
 </div>

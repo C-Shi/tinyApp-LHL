@@ -1,18 +1,37 @@
 <% include ./partials/_head.ejs %>
-<div class="container">
+<div class="container plain-form">
   <div class="row">
-    <form action="/login" method="POST" class="col-8 form">
-      <h3>Login</h3>
-      <div class="form-group">
-        <label>Email</label>
-        <input name="email" type="email" class="form-control" placeholder="Email: hello@example.com">
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input name="password" type="password" class="form-control" placeholder="******">
-      </div>
-      <button class="btn btn-outline-primary btn-lg">Login</button>
-      <a class="btn btn-outline-secondary btn-lg" href="/register">Register</a>
-    </form>
+      <div class="jumbotron col-12 text-center">
+          <h1 class="display-4">Welcome to tinyApp!</h1>
+          <p class="lead">We provide free service for URL shortening and redirecting</p>
+          <hr class="my-4">
+          <p>To start with, please let us know who you are</p>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+              Proceed to Login
+          </button>
+        </div>
+
+
+        <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <form action="/login" method="POST" class="col-8 form">
+                    <h3>Login</h3>
+                    <div class="form-group">
+                      <label>Email</label>
+                      <input name="email" type="email" class="form-control" placeholder="Email: hello@example.com">
+                    </div>
+                    <div class="form-group">
+                      <label>Password</label>
+                      <input name="password" type="password" class="form-control" placeholder="******">
+                    </div>
+                    <button class="btn btn-outline-primary btn-lg">Login</button>
+                    <a class="btn btn-outline-secondary btn-lg" href="/register">Register</a>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
   </div>
 </div>
