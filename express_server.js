@@ -59,15 +59,6 @@ app.use(cookieSession({
   name: 'session',
   keys: ['Lijing is the best'],
 }));
-// apply 404 handler to all unknow routing
-app.use((req, res, next) => {
-  if (res.statusCode === 404) {
-    res.status(404).render('_error', { code: 404, message: 'Page Not Found' });
-  } else {
-    next();
-  }
-});
-
 
 //  **************** get request *******************
 // requrest to home page
@@ -350,6 +341,15 @@ app.post('/register', (req, res) => {
     };
     res.render('_error', err);
   }
+});
+
+// apply 404 handler to all unknow routing - Always at last
+app.get('*', (req, res) => {
+  const err = {
+    code: 404,
+    message: 'Invalid URL',
+  };
+  res.render('_error', err);
 });
 
 
