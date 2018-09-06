@@ -99,17 +99,32 @@ app.get('/u/:shortURL', (req, res) => {
   let longURL = urlDatabase[shortURL].longURL;
   if (longURL) {
     urlDatabase[shortURL].visits++;
-    if(!req.session.visitor_id){
+
+    /* unique visitor logics
+      1. if no user logged in, treat as visitor, create a session cookie visitor_id for every visit
+      2. if user logged in, compare if this user's user_id is already exist in the visitor history
+      3. session cookie visitor_id will only appy to visitor, for user, will use user_id instead
+    */
+    if (!req.session.user_id){
       req.session.visitor_id = generateRandomString();
+        const visitorInfo = {
+          visitor_id: req.session.visitor_id,
+          timestamp: req.timestamp
+        }
+        urlDatabase[shortURL].visitor.push(visitorInfo);
+    }else if(!urlDatabase[shortURL].visitor.find((visitor) => {
+      return visitor.visitor_id === req.session.user_id
+    })){
+      const visitorInfo = {
+        visitor_id: req.session.user_id,
+        timestamp: req.timestamp
+      };
+      urlDatabase[shortURL].visitor.push(visitorInfo);
     }
-    const visitorInfo = {
-      visitor_id: req.session.visitor_id,
-      timestamp: req.timestamp
-    }
-    urlDatabase[shortURL].visitor.push(visitorInfo);
+
     console.log(urlDatabase[shortURL].visitor);
     res.redirect(longURL);
-  }else {
+  } else {
     res.send('Cannot find');
   }
 })
